@@ -1,6 +1,4 @@
 <?php
-error_reporting(E_ALL);
-// PHP Data Objects(PDO) Sample Code:
 try {
     $conn = new PDO("sqlsrv:server = tcp:cloudcomputingclassdb.database.windows.net,1433; Database = CloudComputingClassDB", "mattink37", "a:U7wp_a");
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -10,7 +8,7 @@ catch (PDOException $e) {
     die(print_r($e));
 }
 
-// SQL Server Extension Sample Code:
+// // SQL Server Extension Sample Code:
 $connectionInfo = array("UID" => "mattink37", "pwd" => "a:U7wp_a", "Database" => "CloudComputingClassDB", "LoginTimeout" => 30, "Encrypt" => 1, "TrustServerCertificate" => 0);
 $serverName = "tcp:cloudcomputingclassdb.database.windows.net,1433";
 $conn = sqlsrv_connect($serverName, $connectionInfo);
@@ -23,8 +21,9 @@ while ($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC))
 {
   $data[] = $row;
 }
-echo json_encode($data);
 
+echo json_encode($data);
+exit;
 /*$grades = array();
 $count = 0;
 $studentID = -1;
@@ -43,5 +42,5 @@ for ($i = 0; $i < count($grades); $i++) {
   echo "<td>$grades[$i]</td>";
   echo "</tr>";
 }
-echo "</table>";
-?>*/
+echo "</table>";*/
+?>
