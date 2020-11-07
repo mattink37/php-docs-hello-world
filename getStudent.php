@@ -23,24 +23,4 @@ while ($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC))
 }
 
 echo json_encode($data);
-exit;
-/*$grades = array();
-$count = 0;
-$studentID = -1;
-while ($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC)) {
-     $studentID = $row['id'];
-     $grades[$count] = $row['grade'];
-     $count++;
-     }
-echo "<h1>Grades for Student $studentID</h1>";
-echo "<table>";
-echo "<tr>";
-echo "<th>Grade</th>";
-echo "<tr>";
-for ($i = 0; $i < count($grades); $i++) {
-  echo "<tr>";
-  echo "<td>$grades[$i]</td>";
-  echo "</tr>";
-}
-echo "</table>";*/
 ?>

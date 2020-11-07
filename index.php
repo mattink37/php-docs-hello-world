@@ -2,6 +2,7 @@
   <link rel="shortcut icon" href="">
 </head>
 
+<h1>Student Grades</h1>
 <?php
 try {
     $conn = new PDO("sqlsrv:server = tcp:cloudcomputingclassdb.database.windows.net,1433; Database = CloudComputingClassDB", "mattink37", "a:U7wp_a");
@@ -41,18 +42,26 @@ echo "</select></form>";
   function showStudent(str) {
     var xhttp;
     var response;
+    var deserializedResponse;
+    var grades = 0;
+    var grade;
     if (str == "") {
       document.getElementById("txtHint").innerHTML = "";
       return;
     }
     xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
-      response = JSON.parse(this.responseText);
+      response = this.responseText;
+      deserializedResponse = JSON.parse(response);
       if (this.readyState == 4 && this.status == 200) {
+        document.getElementById("txtHint").innerHTML = "Grades:<br>"; 
         var i;
-        for (i = 0; i < response.length; i++) {
-          document.getElementById("txtHint").innerHTML += response[i].grade + "<br>";
+        for (i = 0; i < deserializedResponse.length; i++) {
+          grade = deserializedResponse[i].grade;
+          document.getElementById("txtHint").innerHTML += grade + "<br>";
+          grades += grade;
         }
+        document.getElementById("txtHint").innerHTML += "Average: " + grades / deserializedResponse.length;
       }
     };
     xhttp.open("GET", "getStudent.php?q=" + str, true);
@@ -60,5 +69,7 @@ echo "</select></form>";
     document.getElementById("txtHint").innerHTML = "";
   }
 </script>
+
+<br><br><footer>Created by Matt Inkeles</footer>
 
 <!--[{"id":0,"grade":100},{"id":0,"grade":89},{"id":0,"grade":95},{"id":0,"grade":98},{"id":0,"grade":0}]-->
