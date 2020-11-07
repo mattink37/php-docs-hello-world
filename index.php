@@ -3,7 +3,7 @@
 </head>
 
 <button onclick="myFunction()">Toggle Mode</button>
-
+<!--------------GET-------------->
 <div id="GET">
 <h1>Student Grade Retrieval</h1>
 <?php
@@ -16,7 +16,6 @@ catch (PDOException $e) {
     die(print_r($e));
 }
 
-// // SQL Server Extension Sample Code:
 $connectionInfo = array("UID" => "mattink37", "pwd" => "a:U7wp_a", "Database" => "CloudComputingClassDB", "LoginTimeout" => 30, "Encrypt" => 1, "TrustServerCertificate" => 0);
 $serverName = "tcp:cloudcomputingclassdb.database.windows.net,1433";
 $conn = sqlsrv_connect($serverName, $connectionInfo);
@@ -40,41 +39,17 @@ echo "<form action=\"\">
 echo "</select></form>";
 ?><div id="txtHint">Student grades will be listed here</div></div>
 
+<!--------------POST-------------->
 <div id="POST" style="display:none">
 <h1>Student Grade Entry</h1>
-<?php
-try {
-    $conn = new PDO("sqlsrv:server = tcp:cloudcomputingclassdb.database.windows.net,1433; Database = CloudComputingClassDB", "mattink37", "a:U7wp_a");
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-}
-catch (PDOException $e) {
-    print("Error connecting to SQL Server.");
-    die(print_r($e));
-}
-
-// // SQL Server Extension Sample Code:
-$connectionInfo = array("UID" => "mattink37", "pwd" => "a:U7wp_a", "Database" => "CloudComputingClassDB", "LoginTimeout" => 30, "Encrypt" => 1, "TrustServerCertificate" => 0);
-$serverName = "tcp:cloudcomputingclassdb.database.windows.net,1433";
-$conn = sqlsrv_connect($serverName, $connectionInfo);
-$tsql= "SELECT DISTINCT id FROM Grades";
-$getResults = sqlsrv_query($conn, $tsql);
-
-$data = array();
-while ($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC))
-{
-  $data[] = $row;
-}
-
-echo "<form action=\"\">
-        <select name=\"students\" onchange=\"showStudent(this.value)\">
-          <option value=\"\">Select a student:</option>";
-          for ($i = 0; $i < count($data); $i++)
-          {
-            $studentID = implode(" ", $data[$i]);
-            echo "<option value=" . $studentID . ">student " . $studentID . "</option>";
-          }
-echo "</select></form>";
-?></div>
+<form onsubmit="submitGrade(studentIDField.value, studentGradeField.value)">
+  <label for="studentIDField">Student id</label>
+  <input type="number" id="studentIDField"></input>
+  <label for="studentGradeField">Student grade</label>
+  <input type="number" id="studentGradeField"></input>
+  <input type="submit" value="Submit">
+</form>
+<div id="confirmationText"></div></div>
 
 
 <script>
@@ -121,6 +96,19 @@ function myFunction() {
     xhttp.open("GET", "getStudent.php?q=" + str, true);
     xhttp.send();
     document.getElementById("txtHint").innerHTML = "";
+  }
+</script>
+
+<script>
+  function submitGrade(str1, str2) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) {
+          document.getElementById("confirmationText").innerHTML = "Submitted Successfully!";
+      }
+    };
+    xhttp.open("GET", "submitGrade.php?id=" + str1 + "&grade=" + str2, true);
+    xhttp.send();
   }
 </script>
 
