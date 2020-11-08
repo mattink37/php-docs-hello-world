@@ -70,7 +70,7 @@ echo "</select></form>";
   <label for="studentIDField">Student id</label>
   <input type="number" id="studentIDField"></input>
   <label for="studentGradeField">Student grade</label>
-  <input type="number" id="studentGradeField"></input>
+  <input type="text" id="studentGradeField"></input>
   <input type="submit" value="Submit">
 </form></div>
 
