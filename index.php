@@ -1,3 +1,27 @@
+<?php
+    if( ( isset($_SERVER['PHP_AUTH_USER'] ) && ( $_SERVER['PHP_AUTH_USER'] == "admin" ) ) AND
+      ( isset($_SERVER['PHP_AUTH_PW'] ) && ( $_SERVER['PHP_AUTH_PW'] == "password" )) )
+    {
+        $name = $_SERVER['PHP_AUTH_USER'];
+        print("Hello, $name<br><br>\n");
+    }
+    else
+    {
+        //Send headers to cause a browser to request
+        //username and password from user
+        header("WWW-Authenticate: " .
+            "Basic realm=\"Matt Inkeles' Homework 4\"");
+        header("HTTP/1.0 401 Unauthorized");
+
+        //Show failure text, which browsers usually
+        //show only after several failed attempts
+        print("This page is protected by HTTP " .
+            "Authentication.<br>\nUse <b>admin</b> " .
+            "for the username, and <b>password</b> " .
+            "for the password.<br>\n");
+    }
+?>
+
 <head>
   <link rel="shortcut icon" href="">
 </head>
@@ -29,7 +53,7 @@ while ($row = sqlsrv_fetch_array($getResults, SQLSRV_FETCH_ASSOC))
 }
 
 echo "<form action=\"\">
-        <select name=\"students\" onchange=\"showStudent(this.value)\">
+        <select id=\"studentCombo\" name=\"students\" onchange=\"showStudent(this.value)\">
           <option value=\"\">Select a student:</option>";
           for ($i = 0; $i < count($data); $i++)
           {
@@ -48,8 +72,7 @@ echo "</select></form>";
   <label for="studentGradeField">Student grade</label>
   <input type="number" id="studentGradeField"></input>
   <input type="submit" value="Submit">
-</form>
-<div id="confirmationText"></div></div>
+</form></div>
 
 
 <script>
@@ -69,7 +92,7 @@ function myFunction() {
 
 <script>
   function showStudent(str) {
-    var xhttp;
+    var xhttpGet;
     var response;
     var deserializedResponse;
     var grades = 0;
@@ -78,8 +101,8 @@ function myFunction() {
       document.getElementById("txtHint").innerHTML = "";
       return;
     }
-    xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function () {
+    xhttpGet = new XMLHttpRequest();
+    xhttpGet.onreadystatechange = function () {
       response = this.responseText;
       deserializedResponse = JSON.parse(response);
       if (this.readyState == 4 && this.status == 200) {
@@ -93,25 +116,32 @@ function myFunction() {
         document.getElementById("txtHint").innerHTML += "Average: " + grades / deserializedResponse.length;
       }
     };
-    xhttp.open("GET", "getStudent.php?q=" + str, true);
-    xhttp.send();
-    document.getElementById("txtHint").innerHTML = "";
+    xhttpGet.open("GET", "getStudent.php?q=" + str, true);
+    xhttpGet.send();
   }
 </script>
 
 <script>
   function submitGrade(str1, str2) {
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function () {
-      if (this.readyState == 4 && this.status == 200) {
-          document.getElementById("confirmationText").innerHTML = "Submitted Successfully!";
-      }
+    var xhttpPost = new XMLHttpRequest();
+    
+    xhttpPost.onreadystatechange = function () {
+        console.log("State Change");
     };
-    xhttp.open("GET", "submitGrade.php?id=" + str1 + "&grade=" + str2, true);
-    xhttp.send();
+    xhttpPost.open("GET", "submitGrade.php?id=" + str1 + "&grade=" + str2, true);
+    //xhttpPost.setRequestHeader('Authorization','Basic ' + Base64StringOfUserColonPassword);
+    xhttpPost.send();
+    sleep(500); //wait for sql changes to update
   }
+  function sleep(milliseconds) {
+  var start = new Date().getTime();
+  for (var i = 0; i < 1e7; i++) {
+    if ((new Date().getTime() - start) > milliseconds){
+      break;
+    }
+  }
+  window.location.reload(true); 
+}
 </script>
 
 <br><br><footer>Created by Matt Inkeles</footer>
-
-<!--[{"id":0,"grade":100},{"id":0,"grade":89},{"id":0,"grade":95},{"id":0,"grade":98},{"id":0,"grade":0}]-->
